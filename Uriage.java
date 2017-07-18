@@ -18,16 +18,22 @@ public class Uriage {
 	public static void main(String[] args) {
 		HashMap<String, String> branchShop = new HashMap<String, String>() ;
 		HashMap<String, Long> branchSum = new HashMap<String, Long>() ;
+
 		try {
+			if (!(args.length == 1)) {
+				System.out.println("予期せぬエラーが発生しました");
+				return;
+			}
 			File file = new File(args[0], "branch.lst");
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 			String s;
 			while((s = br.readLine()) != null) {
-				String[] shops = s.split(",", 0);
-				if (shops[0].matches("^\\d{3}")) {
+				String[] shops = s.split(",", -1);
+				if (shops[0].matches("^\\d{3}") && shops.length <= 2) {
 					branchShop.put(shops[0], shops[1]);
 					branchSum.put(shops[0], 0L);
+					//System.out.println(shops[0]);
 				} else {
 					System.out.println("支店定義ファイルのフォーマットが不正です");
 					br.close();
@@ -41,13 +47,15 @@ public class Uriage {
 		}//System.out.println(branchSum.entrySet());
 		HashMap<String, String> commodityBy = new HashMap<String, String>() ;
 		HashMap<String, Long> commoditySum = new HashMap<String, Long>() ;
+
 		try {
 			File file = new File(args[0], "commodity.lst");
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 			String s;
 			while((s = br.readLine()) != null) {
-				String[] masins = s.split(",", 0);
+				String[] masins = s.split(",", -1);
+
 				if (masins[0].matches("^\\w{8}")) {
 					commodityBy.put(masins[0], masins[1]);
 					commoditySum.put(masins[0], 0L);
@@ -69,7 +77,7 @@ public class Uriage {
 			String filename = files[i].getName();
 			//String new_filename = filename.substring(1,8);
 			//System.out.println(filename);
-			if (filename.matches("^\\d{8}.rcd")) {
+			if (filename.matches("^\\d{8}.rcd") && files[i].isFile()) {
 				//String new_filename = filename.substring(1,8);
 				//System.out.println(filename);
 				file.add(files[i]);
@@ -85,16 +93,25 @@ public class Uriage {
 				return;
 			}
 		}
-		ArrayList<Map.Entry<String,Long>> maxMin = new ArrayList<Map.Entry<String,Long>>(branchSum.entrySet());
-		ArrayList<Map.Entry<String,Long>> saleMax = new ArrayList<Map.Entry<String,Long>>(commoditySum.entrySet());
+		ArrayList<Map.Entry<String,Long>> branchDown =
+				new ArrayList<Map.Entry<String,Long>>(branchSum.entrySet());
+		ArrayList<Map.Entry<String,Long>> commodityDown =
+				new ArrayList<Map.Entry<String,Long>>(commoditySum.entrySet());
+
 		try {
 			for (int i = 0; i < file.size(); i++) {
 				BufferedReader br = new BufferedReader(new FileReader(file.get(i)));
 				ArrayList<String> payList = new ArrayList<String>();
+
 				try {
 					String line;
 					while ((line  = br.readLine()) != null) {
 						payList.add(line);
+					}
+					if (!(payList.get(2).matches("\\d[0-9]+$"))) {
+						System.out.println(file.get(i).getName() + "のフォーマットが不正です");
+						br.close();
+						return;
 					}
 					if (!(payList.size() == 3)) {
 						System.out.println(file.get(i).getName() + "のフォーマットが不正です");
@@ -120,10 +137,11 @@ public class Uriage {
 						return;
 					}
 					Long branchLast = branchSum.get(payList.get(0));
+					Long commodityLast = commoditySum.get(payList.get(1));
 					//System.out.println(s);
-					if (branchLast < 9999999999L) {
+					if (branchLast <= 9999999999L || commodityLast <= 9999999999L) {
 					} else {
-						System.out.println(file.get(i).getName() + "のフォーマットが不正です");
+						System.out.println(file.get(i).getName() + "合計金額が10桁を超えました");
 						br.close();
 						return;
 					}
@@ -132,17 +150,17 @@ public class Uriage {
 				catch(FileNotFoundException e) {
 				}
 			}
-			//ArrayList<Map.Entry<String,Long>> maxMin = new ArrayList<Map.Entry<String,Long>>(branchSum.entrySet());
-			Collections.sort(maxMin, new Comparator<Map.Entry<String,Long>>() {
+			//ArrayList<Map.Entry<String,Long>> maxMin =new ArrayList<Map.Entry<String,Long>>(branchSum.entrySet());
+			Collections.sort(branchDown, new Comparator<Map.Entry<String,Long>>() {
 				public int compare(
-						Entry<String,Long> maxMin1, Entry<String,Long> maxMin2) {
-					return ((Long)maxMin2.getValue()).compareTo((Long)maxMin1.getValue());
+						Entry<String,Long> branchDown1, Entry<String,Long> branchDown2) {
+					return ((Long)branchDown2.getValue()).compareTo((Long)branchDown1.getValue());
 				}
 			});
-			Collections.sort(saleMax, new Comparator<Map.Entry<String,Long>>() {
+			Collections.sort(commodityDown, new Comparator<Map.Entry<String,Long>>() {
 				public int compare(
-						Entry<String,Long> saleMax1, Entry<String,Long> saleMax2) {
-					return ((Long)saleMax2.getValue()).compareTo((Long)saleMax1.getValue());
+						Entry<String,Long> commodityDown1, Entry<String,Long> commodityDown2) {
+					return ((Long)commodityDown2.getValue()).compareTo((Long)commodityDown1.getValue());
 				}
 			});
 			//System.out.println(branchSum.entrySet());
@@ -157,12 +175,14 @@ public class Uriage {
 		}
 		File branchOut = new File(args[0], "branch.out");
 		File commodityOut = new File(args[0], "commodity.out");
+
 		try {
 			branchOut.createNewFile();
 			FileWriter fw = new FileWriter(branchOut);
 			BufferedWriter bw = new BufferedWriter(fw);
-			for (Entry<String,Long> branchSort : maxMin) {
-				bw.write(branchSort.getKey() + ","  + branchShop.get(branchSort.getKey()) + "," +  branchSort.getValue() + "\n");
+			for (Entry<String,Long> branchSort : branchDown) {
+				bw.write(branchSort.getKey() + ","  +
+						branchShop.get(branchSort.getKey()) + "," +  branchSort.getValue() + "\n");
 			}
 			bw.close();
 		} catch (IOException e) {
@@ -170,11 +190,12 @@ public class Uriage {
 			return;
 
 		}
+
 		try {
 			commodityOut.createNewFile();
 			FileWriter fw = new FileWriter(commodityOut);
 			BufferedWriter bw = new BufferedWriter(fw);
-			for (Entry<String,Long> commoditySort : saleMax) {
+			for (Entry<String,Long> commoditySort : commodityDown) {
 				bw.write(commoditySort.getKey() + ","  + commodityBy.get(commoditySort.getKey()) + "," +  commoditySort.getValue() + "\n");
 			}
 			bw.close();
