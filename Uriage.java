@@ -193,7 +193,8 @@ public class Uriage {
 			bw = new BufferedWriter(fw);
 			for (Entry<String,Long> branchSort : branchDown) {
 				bw.write(branchSort.getKey() + ","  +
-						branchShop.get(branchSort.getKey()) + "," +  branchSort.getValue() + "\n");
+						branchShop.get(branchSort.getKey()) + "," +  branchSort.getValue());
+				bw.newLine();
 			}
 		} catch (IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
@@ -213,7 +214,8 @@ public class Uriage {
 			bw = new BufferedWriter(fw);
 			for (Entry<String,Long> commoditySort : commodityDown) {
 				bw.write(commoditySort.getKey() + ","  +
-						commodityBy.get(commoditySort.getKey()) + "," +  commoditySort.getValue() + "\n");
+						commodityBy.get(commoditySort.getKey()) + "," +  commoditySort.getValue());
+				bw.newLine();
 			}
 		} catch (IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
