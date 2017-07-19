@@ -33,7 +33,7 @@ public class Uriage {
 			String s;
 			while((s = br.readLine()) != null) {
 				String[] shops = s.split(",", -1);
-				if (shops[0].matches("^\\d{3}") && shops.length <= 2) {
+				if (shops[0].matches("^\\d{3}") && shops.length == 2) {
 					branchShop.put(shops[0], shops[1]);
 					branchSum.put(shops[0], 0L);
 				} else {
