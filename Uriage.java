@@ -133,7 +133,7 @@ public class Uriage {
 						System.out.println(file.get(i).getName() + "のフォーマットが不正です");
 						return;
 					}
-					if (!(payList.get(2).matches("\\d[0-9]+$"))) {
+					if (!(payList.get(2).matches("\\d+$"))) {
 						System.out.println("予期せぬエラーが発生しました");
 						return;
 					}
@@ -155,7 +155,8 @@ public class Uriage {
 					}
 					Long branchLast = branchSum.get(payList.get(0));
 					Long commodityLast = commoditySum.get(payList.get(1));
-					if (!(branchLast <= 9999999999L) || !(commodityLast <= 9999999999L)) {
+					//System.out.println(payList.get(2));
+					if (branchLast > 9999999999L || commodityLast > 9999999999L) {
 						System.out.println(file.get(i).getName() + "の合計金額が10桁を超えました");
 						return;
 					}
