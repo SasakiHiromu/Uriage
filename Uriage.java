@@ -36,7 +36,6 @@ public class Uriage {
 				if (shops[0].matches("^\\d{3}") && shops.length <= 2) {
 					branchShop.put(shops[0], shops[1]);
 					branchSum.put(shops[0], 0L);
-					//System.out.println(shops[0]);
 				} else {
 					System.out.println("支店定義ファイルのフォーマットが不正です");
 				}
@@ -55,6 +54,7 @@ public class Uriage {
 				System.out.println("予期せぬエラーが発生しました");
 			}
 		}
+
 		HashMap<String, String> commodityBy = new HashMap<String, String>() ;
 		HashMap<String, Long> commoditySum = new HashMap<String, Long>() ;
 
@@ -88,16 +88,14 @@ public class Uriage {
 				System.out.println("予期せぬエラーが発生しました");
 			}
 		}
+
 		File dir = new File(args[0]);
 		ArrayList<File> file = new ArrayList<File>();
 		File[] files = dir.listFiles();
+
 		for (int i = 0; i < files.length; i++) {
 			String filename = files[i].getName();
-			//String new_filename = filename.substring(1,8);
-			//System.out.println(filename);
 			if (filename.matches("^\\d{8}.rcd") && files[i].isFile()) {
-				//String new_filename = filename.substring(1,8);
-				//System.out.println(filename);
 				file.add(files[i]);
 			}
 		}
@@ -106,7 +104,6 @@ public class Uriage {
 			String filename = file.get(i).getName();
 			String name = filename.substring(1,8);
 			int number = Integer.parseInt(name);
-			//System.out.println();
 			if (!(number == i + 1)) {
 				System.out.println("売上ファイル名が連番になっていません");
 			}
@@ -160,7 +157,6 @@ public class Uriage {
 				catch(FileNotFoundException e) {
 				}
 			}
-			//ArrayList<Map.Entry<String,Long>> maxMin =new ArrayList<Map.Entry<String,Long>>(branchSum.entrySet());
 			Collections.sort(branchDown, new Comparator<Map.Entry<String,Long>>() {
 				public int compare(
 						Entry<String,Long> branchDown1, Entry<String,Long> branchDown2) {
@@ -173,10 +169,6 @@ public class Uriage {
 					return ((Long)commodityDown2.getValue()).compareTo((Long)commodityDown1.getValue());
 				}
 			});
-			//System.out.println(branchSum.entrySet());
-			//System.out.println(branchSum.values());
-			//System.out.println(commoditySum.entrySet());
-			//System.out.println(commoditySum.values());
 		}
 		catch( IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
