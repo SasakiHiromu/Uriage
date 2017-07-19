@@ -28,6 +28,7 @@ public class Uriage {
 			File file = new File(args[0], "branch.lst");
 			if (!file.exists()) {
 				System.out.println("支店定義ファイルが存在しません");
+				return;
 			}
 			FileReader fr = new FileReader(file);
 			br = new BufferedReader(fr);
@@ -39,6 +40,7 @@ public class Uriage {
 					branchSum.put(shops[0], 0L);
 				} else {
 					System.out.println("支店定義ファイルのフォーマットが不正です");
+					return;
 				}
 			}
 		} catch(IOException e) {
@@ -50,9 +52,8 @@ public class Uriage {
 					br.close();
 				}
 			} catch (IOException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
 				System.out.println("予期せぬエラーが発生しました");
+				return;
 			}
 		}
 
@@ -63,6 +64,7 @@ public class Uriage {
 			File file = new File(args[0], "commodity.lst");
 			if (!file.exists()) {
 				System.out.println("商品定義ファイルが存在しません");
+				return;
 			}
 			FileReader fr = new FileReader(file);
 			br = new BufferedReader(fr);
@@ -70,11 +72,12 @@ public class Uriage {
 			while((s = br.readLine()) != null) {
 				String[] masins = s.split(",", -1);
 
-				if (masins[0].matches("^\\w{8}")) {
+				if (masins[0].matches("^\\w{8}") && masins.length == 2) {
 					commodityBy.put(masins[0], masins[1]);
 					commoditySum.put(masins[0], 0L);
 				} else {
 					System.out.println("商品定義ファイルのフォーマットが不正です");
+					return;
 				}
 			}
 		} catch(IOException e) {
@@ -87,6 +90,7 @@ public class Uriage {
 				}
 			} catch (IOException e) {
 				System.out.println("予期せぬエラーが発生しました");
+				return;
 			}
 		}
 
@@ -107,6 +111,7 @@ public class Uriage {
 			int number = Integer.parseInt(name);
 			if (!(number == i + 1)) {
 				System.out.println("売上ファイル名が連番になっていません");
+				return;
 			}
 		}
 		ArrayList<Map.Entry<String,Long>> branchDown =
@@ -129,7 +134,7 @@ public class Uriage {
 						return;
 					}
 					if (!(payList.get(2).matches("\\d[0-9]+$"))) {
-						System.out.println(file.get(i).getName() + "のフォーマットが不正です");
+						System.out.println("予期せぬエラーが発生しました");
 						return;
 					}
 					if (branchSum.containsKey(payList.get(0))) {
@@ -157,6 +162,16 @@ public class Uriage {
 				}
 				catch(FileNotFoundException e) {
 					System.out.println("予期せぬエラーが発生しました");
+					return;
+				} finally {
+					try {
+						if (br != null) {
+							br.close();
+						}
+					}catch (IOException e) {
+						System.out.println("予期せぬエラーが発生しました");
+						return;
+					}
 				}
 			}
 			Collections.sort(branchDown, new Comparator<Map.Entry<String,Long>>() {
@@ -192,6 +207,7 @@ public class Uriage {
 			}
 		} catch (IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
+			return;
 		} finally {
 			try {
 				if (bw != null) {
@@ -199,6 +215,7 @@ public class Uriage {
 				}
 			}catch (IOException e) {
 				System.out.println("予期せぬエラーが発生しました");
+				return;
 			}
 		}
 
@@ -213,6 +230,7 @@ public class Uriage {
 			}
 		} catch (IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
+			return;
 		} finally {
 			try {
 				if (bw != null) {
@@ -220,6 +238,7 @@ public class Uriage {
 				}
 			}catch (IOException e) {
 				System.out.println("予期せぬエラーが発生しました");
+				return;
 			}
 		}
 	}
