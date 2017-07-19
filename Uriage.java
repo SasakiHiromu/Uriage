@@ -23,6 +23,7 @@ public class Uriage {
 		try {
 			if (!(args.length == 1)) {
 				System.out.println("予期せぬエラーが発生しました");
+				return;
 			}
 			File file = new File(args[0], "branch.lst");
 			if (!file.exists()) {
@@ -149,12 +150,13 @@ public class Uriage {
 					}
 					Long branchLast = branchSum.get(payList.get(0));
 					Long commodityLast = commoditySum.get(payList.get(1));
-					//System.out.println(s);
 					if (!(branchLast <= 9999999999L) || !(commodityLast <= 9999999999L)) {
 						System.out.println(file.get(i).getName() + "の合計金額が10桁を超えました");
+						return;
 					}
 				}
 				catch(FileNotFoundException e) {
+					System.out.println("予期せぬエラーが発生しました");
 				}
 			}
 			Collections.sort(branchDown, new Comparator<Map.Entry<String,Long>>() {
