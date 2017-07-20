@@ -75,32 +75,32 @@ public class CalulateSales {
 						System.out.println("予期せぬエラーが発生しました");
 						return;
 					}
-					if (branchSum.containsKey(payList.get(0))) {
-						Long cord = branchSum.get(payList.get(0));
-						cord += Long.parseLong(payList.get(2));
-						branchSum.put(payList.get(0), cord);
-					} else {
+					if (!(branchSum.containsKey(payList.get(0)))) {
 						System.out.println(file.get(i).getName() + "の支店コードが不正です");
 						return;
 					}
-					if (commoditySum.containsKey(payList.get(1))) {
-						Long sale = commoditySum.get(payList.get(1));
-						sale += Long.parseLong(payList.get(2));
-						commoditySum.put(payList.get(1), sale);
-					} else {
+					if (!(commoditySum.containsKey(payList.get(1)))) {
 						System.out.println(file.get(i).getName() + "の商品コードが不正です");
 						return;
 					}
-					Long branchLast = branchSum.get(payList.get(0));
-					Long commodityLast = commoditySum.get(payList.get(1));
-					if (branchLast > 9999999999L) {
+					//Long branchLast = branchSum.get(payList.get(0));
+					//Long commodityLast = commoditySum.get(payList.get(1));
+
+					Long cord = branchSum.get(payList.get(0));
+					cord += Long.parseLong(payList.get(2));
+
+					Long sale = commoditySum.get(payList.get(1));
+					sale += Long.parseLong(payList.get(2));
+					if (cord > 9999999999L) {
 						System.out.println("合計金額が10桁を超えました");
 						return;
 					}
-					if (commodityLast > 9999999999L) {
+					if (sale > 9999999999L) {
 						System.out.println("合計金額が10桁を超えました");
 						return;
 					}
+					branchSum.put(payList.get(0), cord);
+					commoditySum.put(payList.get(1), sale);
 				}
 				catch(FileNotFoundException e) {
 					System.out.println("予期せぬエラーが発生しました");
