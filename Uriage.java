@@ -93,9 +93,12 @@ public class Uriage {
 					}
 					Long branchLast = branchSum.get(payList.get(0));
 					Long commodityLast = commoditySum.get(payList.get(1));
-					if (!(branchLast > 9999999999L) || !(commodityLast > 9999999999L)) {
-					} else {
-						System.out.println(file.get(i).getName() + "の合計金額が10桁を超えました");
+					if (branchLast > 9999999999L) {
+						System.out.println("合計金額が10桁を超えました");
+						return;
+					}
+					if (commodityLast > 9999999999L) {
+						System.out.println("合計金額が10桁を超えました");
 						return;
 					}
 				}
